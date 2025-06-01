@@ -1,0 +1,49 @@
+# Environment Variables
+.env
+
+# Byte-compiled / Cached files
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+
+
+# Database files (if using SQLite)
+db.sqlite3
+db.sqlite3-journal
+
+# Media and Static Files (if generated dynamically)
+media/
+staticfiles/
+static/
+
+# Logs and Debug Files
+*.log
+logs/
+debug.log
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Coverage and Testing Reports
+htmlcov/
+.coverage
+.coverage.*
+*.cover
+.nosetests
+pytest_cache/
+tox/
+junitxml/
+
+# Deployment and Build
+dist/
+build/
+*.egg-info/
+pip-log.txt
+pip-delete-this-directory.txt
