@@ -27,9 +27,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env' ))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 
 
 # Application definition
@@ -68,6 +68,7 @@ CORS_EXPOSE_HEADERS = ['Set-Cookie', 'Content-Type', 'X-CSRFToken']
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://voxta-frontend.nikhilrajpk.in",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -135,8 +136,12 @@ WSGI_APPLICATION = 'voxta_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST', default='localhost'),
+        'PORT': env('DB_PORT', default='5432'),
     }
 }
 
@@ -207,12 +212,20 @@ LOGGING = {
     },
 }
 
-
+REDIS_HOST = env('REDIS_HOST', default='localhost')
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],
+            'hosts': [(REDIS_HOST, env.int('REDIS_PORT', default=6379))],
         },
     },
 }
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
