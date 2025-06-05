@@ -129,7 +129,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'voxta_backend.wsgi.application'
-
+ASGI_APPLICATION = 'voxta_backend.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -205,19 +205,33 @@ LOGGING = {
         },
     },
     'loggers': {
-        '': {
+        'user_app.middleware': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'user_app.consumers': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'channels': { 
             'handlers': ['console'],
             'level': 'DEBUG',
         },
     },
 }
 
+# Redis configuration for Redis Cloud
 REDIS_HOST = env('REDIS_HOST', default='localhost')
+REDIS_PORT = env('REDIS_PORT', default='6379')
+REDIS_PASSWORD = env('REDIS_PASSWORD', default='')
+REDIS_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0"
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [(REDIS_HOST, env.int('REDIS_PORT', default=6379))],
+            'hosts': [REDIS_URL],
+            'symmetric_encryption_keys': [SECRET_KEY],
         },
     },
 }
@@ -228,4 +242,5 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     X_FRAME_OPTIONS = 'DENY'

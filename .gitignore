@@ -1,6 +1,6 @@
 # Environment Variables
 .env
-
+.env.prod
 # Byte-compiled / Cached files
 **/__pycache__/
 *.py[cod]
